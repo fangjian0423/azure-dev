@@ -142,6 +142,12 @@ func (st *springAppTarget) Deploy(
 				return
 			}
 
+			st.env.SetServiceProperty(serviceConfig.Name, "RELATIVE_PATH", *relativePath)
+			if err := st.env.Save(); err != nil {
+				task.SetError(fmt.Errorf("failed updating environment with relative path, %w", err))
+				return
+			}
+
 			task.SetProgress(NewServiceProgress("Fetching endpoints for spring app service"))
 			endpoints, err := st.Endpoints(ctx, serviceConfig, targetResource)
 			if err != nil {
